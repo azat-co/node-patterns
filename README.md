@@ -179,14 +179,101 @@ How to modularize dynamic code or where to initialize?
 
 ---
 
-# Singletons
+# Import
 
-* `require`
-* `global`
+```js
+// code A
+module.exports = function(options){
+  // code B
+}
+```
+
+When you `require`, code A is run and code B is not.
+Code A is run only once, no matter how many times you `require`.
+You need to invoke the object to run code B.
 
 ---
 
+# Singletons
+
+* `require`: modules are cached
+
+---
+
+```js
+// module.js
+var a = 1; // Private
+module.exports = {
+  b: 2 // Public
+};
+```
+
+
+---
+
+```js
+// program.js
+var m = require('./module')
+console.log(m.a) // undefined
+console.log(m.b) // 2
+m.b ++
+require('./main')
+```
+
+---
+
+
+```js
+// main.js
+var m = require('./module')
+console.log(m.b) // 3
+```
+
+---
+
+
 # Problem 6
+
+Modules are cached on based on their resolved filename.
+
+Filename will break the caching
+
+```
+var m = require('./MODULE')
+var m = require('./module')
+```
+
+Or different paths
+
+
+---
+
+# Solution
+
+`global`
+
+---
+
+
+`global.NAME`
+
+`GLOBAL.name`
+
+---
+
+```js
+_log = global.console.log
+global.console.log = function(){
+  var args = arguments
+  args[0] = '\033[31m' +args[0] + '\x1b[0m'
+  return _log.apply(null, args)
+}
+```
+
+
+---
+
+# Problem 7
 
 Module Job is performing a task
 
@@ -250,3 +337,13 @@ emitter.once(eventName, listener);
 
 emitter.removeListener(eventName, listener);
 ```
+
+---
+
+Q&A :+1:
+
+Send questions to
+
+https://github.com/azat-co/node-patterns/issues
+
+Twitter: @azat_co
