@@ -119,16 +119,11 @@ callOne({...}, function(error, data1) {
 # Solutions
 
 * Abstract into named functions (hoisted or variables)
-* `async` and `neo-async`
-* Promises - not really helping much
-* Generators - promising
-* Async await - nice wrapper for promises
+* Use obververs
 
 ---
 
-# Async Code
-
-Concurrent is not parallel.
+TK named functions
 
 ---
 
@@ -255,9 +250,13 @@ Or different paths
 ---
 
 
-`global.NAME`
+`global.name`
+
+or
 
 `GLOBAL.name`
+
+
 
 ---
 
@@ -270,22 +269,53 @@ global.console.log = function(){
 }
 ```
 
+---
+
+global is powerful... anti-pattern
+
+similar `window.jQuery = jQuery`
+
+use it sparringly
+
+
+^with a lot of power comes a lot of responsibility
 
 ---
 
 # Problem 7
 
-Module Job is performing a task
+Callbacks are still hard to manage even in modules!
 
-In the main file, we import Job.
+---
+
+# Example
+
+1. Module Job is performing a task.
+1. In the main file, we import Job.
 
 How do we specify a callback (some future logic) on the Job's task completion?
 
 ---
 
-Callbacks? 😢
+Maybe:
 
-That's callback hell.
+```js
+var job = require('./job.js')(callback)
+```
+
+---
+
+
+Maybe:
+
+```js
+var job = require('./job.js')(callback)
+```
+
+
+What about multiple callbacks?
+
+Not very scalable 😢
 
 ---
 
@@ -296,6 +326,7 @@ Observer pattern with event emitters!
 ---
 
 ```js
+// module.js
 var util = require('util');
 var Job = function Job() {
     // ...
@@ -314,6 +345,8 @@ module.exports = Job;
 ---
 
 ```js
+// main.js
+var Job = require('./module.js')
 var job = new Job();
 
 job.on('done', function(details){
@@ -340,10 +373,25 @@ emitter.removeListener(eventName, listener);
 
 ---
 
-Q&A :+1:
+## Event Emitters, Modules and Callbacks are at the core of Node.
 
-Send questions to
+---
 
-https://github.com/azat-co/node-patterns/issues
+# Taking it Further
+
+
+
+* `async` and `neo-async`
+* Promises - not really helping much
+* Generators - promising
+* Async await - nice wrapper for promises
+
+---
+
+Q&A ❓🙋 :+1:
+
+Send bugs 🐛 to
+
+<https://github.com/azat-co/node-patterns/issues>
 
 Twitter: @azat_co
