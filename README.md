@@ -197,10 +197,10 @@ You need to invoke the object to run code B.
 
 ```js
 // module.js
-var a = 1; // Private
+var a = 1 // Private
 module.exports = {
   b: 2 // Public
-};
+}
 ```
 
 
@@ -327,17 +327,17 @@ Observer pattern with event emitters!
 
 ```js
 // module.js
-var util = require('util');
+var util = require('util')
 var Job = function Job() {
     // ...
     this.process = function() {
         // ...
-        job.emit('done', { completedOn: new Date() });
+        job.emit('done', { completedOn: new Date() })
     }
-};
+}
 
-util.inherits(Job, require('events').EventEmitter);
-module.exports = Job;
+util.inherits(Job, require('events').EventEmitter)
+module.exports = Job
 ```
 
 ^ module
@@ -347,14 +347,14 @@ module.exports = Job;
 ```js
 // main.js
 var Job = require('./module.js')
-var job = new Job();
+var job = new Job()
 
 job.on('done', function(details){
-  console.log('Job was completed at', details.completedOn);
-  job.removeAllListeners();
-});
+  console.log('Job was completed at', details.completedOn)
+  job.removeAllListeners()
+})
 
-job.process();
+job.process()
 ```
 
 ^main
@@ -362,13 +362,13 @@ job.process();
 ---
 
 ```js
-emitter.listeners(eventName);
+emitter.listeners(eventName)
 
-emitter.on(eventName, listener);
+emitter.on(eventName, listener)
 
-emitter.once(eventName, listener);
+emitter.once(eventName, listener)
 
-emitter.removeListener(eventName, listener);
+emitter.removeListener(eventName, listener)
 ```
 
 ---
