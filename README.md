@@ -11,6 +11,10 @@ From Callbacks to Observer
 
 <https://github.com/azat-co/node-patterns>
 
+```
+git clone https://github.com/azat-co/node-patterns
+```
+
 ---
 
 # About Presenter
@@ -27,9 +31,10 @@ Blog: webapplog.com
 
 # About Presenter
 
-* Technology Fellow at Capital One
+* Work: Technology Fellow at Capital One
 * Experience: FDIC, NIH, DocuSign, HackReactor and Storify
-* Books: Practical Node.js, Pro Express.js and Express.js API
+* Books: Practical Node.js, Pro Express.js, Express.js API and 8 others
+* Teach: NodeProgram.com
 
 ---
 
@@ -101,6 +106,8 @@ t is a callback
 
 ---
 
+# Callback Convention
+
 ```js
 var fs = require('fs')
 var callback = function(error, data){...}
@@ -118,6 +125,8 @@ fs.readFile('data.csv', 'utf-8', callback)
 
 ---
 
+# Note
+
 Naming doesn't matter but order matters.
 
 Node.js won't enforce the arguments.
@@ -132,7 +141,13 @@ How to ensure the right sequence? Control flow 😕
 
 ---
 
-HTTP request to get an auth token, then to fetch data, then to PUT an update.
+# Example
+
+HTTP requests to:
+
+1. Get an auth token
+1. Fetch data
+1. PUT an update
 
 They must be executed in a certain order.
 
@@ -159,6 +174,10 @@ callOne({...}, function(error, data1) {
 
 ---
 
+# Welcome to callback hell
+
+---
+
 # Callback Hell
 
 * Hard to read
@@ -166,12 +185,15 @@ callOne({...}, function(error, data1) {
 * Easy for devs to make bugs
 * Closing parens - 👿
 
+### callbackhell.com
+
 ---
 
 # Solutions
 
 * Abstract into named functions (hoisted or variables)
 * Use obververs
+* Use advanced libraries and techniques
 
 ---
 
@@ -195,25 +217,43 @@ function processResponse3(error, data1) {
 
 ---
 
-# Problem 3: No Classes
+# Modular Functions
 
-(At least in ES5)
+```js
+var processResponse1 = require('./response1.js')
+callOne({...}, processResponse1)
+```
 
-Objects inherit from other objects
 
-Functions are objects too.
 
+```js
+// response1.js
+var processResponse2 = require('./response2.js')
+module.exports = function processResponse1(error, data1) {
+  callTwo(data1, processResponse2)
+}
+```
 
 ---
 
-# Solution
+```js
+// response2.js
+var processResponse3 = require('./response3.js')
+module.exports = function processResponse2(error, data2) {
+  callThere(data2, processResponse3)
+}
+```
 
-`require('util').inherits(child, parent)`
-
+```js
+// response3.js
+module.exports = function processResponse3(error, data3) {
+  ...
+}
+```
 
 ---
 
-# Problem 4
+# Problem 3
 
 How to modularize code properly?
 
@@ -227,7 +267,7 @@ Note: `exports = {...}` is anti-pattern.
 
 ---
 
-# Problem 5
+# Problem 4
 
 How to modularize dynamic code or where to initialize?
 
@@ -254,6 +294,14 @@ module.exports = function(options){
 When you `require`, code A is run and code B is not.
 Code A is run only once, no matter how many times you `require`.
 You need to invoke the object to run code B.
+
+---
+
+# Demo
+
+```
+node import-main
+```
 
 ---
 
@@ -322,7 +370,7 @@ node program.js
 ---
 
 
-# Problem 6
+# Problem 5
 
 Modules are cached on based on their resolved filename.
 
@@ -374,6 +422,44 @@ use it sparringly
 
 
 ^with a lot of power comes a lot of responsibility
+
+---
+
+# Problem 6: No Classes
+
+How to organize your modular code into classes?
+
+---
+
+# Prototypes
+
+(At least in ES5)
+
+Objects inherit from other objects
+
+Functions are objects too.
+
+---
+
+# Solution
+
+```js
+module.exports = function(options) {
+  // initialize
+  return {
+    getUsers: function() {...},
+    findUserById: function(){...},
+    limit: options.limit || 10,
+    // ...
+  }
+}
+```
+
+---
+
+# Solution
+
+`require('util').inherits(child, parent)`
 
 ---
 
@@ -521,6 +607,10 @@ var boot = require('./routes')(app)
 boot({...}, function(){...})
 ```
 
+---
+
+# Function which returns a function
+
 ```js
 // routes/index.js
 module.exports = function(app){
@@ -529,6 +619,10 @@ module.exports = function(app){
   }
 }
 ```
+
+---
+
+# There are more patterns!
 
 ---
 
@@ -574,7 +668,7 @@ I know it's been a lot 😓 Event Emitters, modules and callbacks are at the cor
 
 ---
 
-# What we don't use, we lose.
+# We lose what we don't use.
 
 ---
 
