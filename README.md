@@ -257,6 +257,24 @@ You need to invoke the object to run code B.
 
 ---
 
+# Importing Folders / Plugin Pattern
+
+```js
+// main.js
+var routes = require('./routes')
+```
+
+```js
+// routes/index.js
+module.exports = {
+  users: require('./users.js'),
+  accounts: require('./accounts.js')
+  ...
+}
+```
+
+---
+
 # Singletons
 
 * `require`: modules are cached
@@ -359,6 +377,53 @@ use it sparringly
 
 ---
 
+## Callbacks Extreme
+
+---
+
+## Node.js Middleware Pattern
+
+---
+
+### What is Middleware
+
+Middleware pattern is a series of processing units connected together, where the output of one unit is the input for the next one. In Node.js, this often means a series of functions in the form:
+
+```js
+function(args, next) {
+  // ... Run some code
+  next(output) // Error or real output
+}
+```
+
+---
+
+## Continuity
+
+Request is coming from a client and response is sent back to the client.
+
+```
+request->middleware1->middleware2->...middlewareN->route->response
+```
+
+
+---
+
+## Express.js Middleware
+
+```js
+app.use(function(request, response, next) {
+  // ...
+  next()
+}, function(request, response, next) {
+  next()
+}, function(request, response, next) {
+  next()
+})
+```
+
+---
+
 # Problem 7
 
 Callbacks are still hard to manage even in modules!
@@ -383,13 +448,6 @@ var job = require('./job.js')(callback)
 ---
 
 
-Maybe:
-
-```js
-var job = require('./job.js')(callback)
-```
-
-
 What about multiple callbacks?
 
 Not very scalable 😢
@@ -406,11 +464,11 @@ Observer pattern with event emitters!
 // module.js
 var util = require('util')
 var Job = function Job() {
+  // ...
+  this.process = function() {
     // ...
-    this.process = function() {
-        // ...
-        job.emit('done', { completedOn: new Date() })
-    }
+    job.emit('done', { completedOn: new Date() })
+  }
 }
 
 util.inherits(Job, require('events').EventEmitter)
@@ -450,11 +508,31 @@ emitter.removeListener(eventName, listener)
 
 ---
 
-## Event Emitters, modules and callbacks are at the core of Node.
+## Dependency Injection
+
+```js
+// server.js
+var app = express()
+app.set(port, 3000)
+...
+app.use(logger('dev'))
+...
+var boot = require('./routes')(app)
+boot({...}, function(){...})
+```
+
+```js
+// routes/index.js
+module.exports = function(app){
+  return function(options, callback) {
+    app.listen(app.get('port'), options, callback)
+  }
+}
+```
 
 ---
 
-# Taking it Further
+# Further Async
 
 * `async` and `neo-async`
 * Promises - not really helping much
@@ -463,12 +541,60 @@ emitter.removeListener(eventName, listener)
 
 ---
 
-# Learning Node
+
+# Further Study
+
+* [`hooks`](https://github.com/bnoguchi/hooks-js)
+* [`require-dir`](https://www.npmjs.com/package/require-dir), [`require-directory`](https://www.npmjs.com/package/require-directory) and [`require-all`](https://www.npmjs.com/package/require-all)
+
+---
+
+# Further Reading
+
+![inline](images/nodedesignpatterns.jpg)
+
+<http://amzn.to/21hXxTy>
+
+---
+
+## 30-second Summary
+
+1. Callbacks
+1. Observer
+1. Singleton
+1. Plugins
+1. Middleware
+1. Bunch of other stuff 💥
+
+---
+
+## THE END
+
+I know it's been a lot 😓 Event Emitters, modules and callbacks are at the core of Node. Know thy patterns!
+
+---
+
+# What we don't use, we lose.
+
+---
+
+# Learning Node+React
 
 NodeProgram.com
 
-**What**: Node+Express+MongoDB+React
-**Where:** March 12-13, NYC
+**What:** Node+Express+MongoDB+React
+**Where:** Flatiron School, NYC
+**When:** March 12-13, NYC
+
+---
+
+# Rate This Talk 👍
+
+Scale 1-10 (10 is highest)
+
+Anyone below 8?
+
+This is your chance ask a question to make it 10!
 
 ---
 
@@ -480,3 +606,4 @@ Send bugs 🐛 to
 <https://github.com/azat-co/node-patterns/issues>
 
 Twitter: @azat_co
+Email: hi@azat.co
