@@ -1,14 +1,67 @@
+footer: © NodeProgram.com, 2016
+slidenumbers: true
+
 # Node Patterns
 
- From Callbacks to Observer
+From Callbacks to Observer
+
+---
+
+# Slides :page_facing_up:
+
+<https://github.com/azat-co/node-patterns>
+
+---
+
+# About Presenter
+
+Azat Mardan
+
+![inline](images/azat.jpeg)
+
+Twitter: @azat_co
+Email: hi@azat.co
+Blog: webapplog.com
+
+---
+
+# About Presenter
+
+* Technology Fellow at Capital One
+* Experience: FDIC, NIH, DocuSign, HackReactor and Storify
+* Books: Practical Node.js, Pro Express.js and Express.js API
+
+---
+
+![left 100%](images/proexpress.png)
+![right 100%](images/practicalnode.png)
+
+---
+
+![left 100%](images/reactquickly.jpg)
+
+![right 100%](images/fullstackjavascript.jpg)
+
+---
+
+![left 100%](images/reactquickly.jpg)
+
+FREE: 7+ hours of videos
+
+<http://reactquickly.co>
+
+and
+<http://bit.ly/1Umn0pC>
+
+![right 100%](images/fullstackjavascript.jpg)
 
 ---
 
 # Node Basics
 
 * JavaScript
-* Asynchronous + Event driven
-* Non-blocking I/O
+* Asynchronous + Event Driven
+* Non-Blocking I/O
 
 ---
 
@@ -23,7 +76,6 @@
 ---
 
 # JavaScript? :unamused:
-
 
 ---
 
@@ -123,7 +175,23 @@ callOne({...}, function(error, data1) {
 
 ---
 
-TK named functions
+# Named Functions
+
+```js
+callOne({...}, processResponse1)
+
+function processResponse1(error, data1) {
+  callTwo(data1, processResponse2)
+}
+
+function processResponse2(error, data2) {
+  callThere(data2, processResponse3)
+}
+
+function processResponse3(error, data1) {
+  ...
+}
+```
 
 ---
 
@@ -226,6 +294,15 @@ console.log(m.b) // 3
 
 ---
 
+# Demo
+
+```
+node main.js
+node program.js
+```
+
+---
+
 
 # Problem 6
 
@@ -233,7 +310,7 @@ Modules are cached on based on their resolved filename.
 
 Filename will break the caching
 
-```
+```js
 var m = require('./MODULE')
 var m = require('./module')
 ```
@@ -373,13 +450,11 @@ emitter.removeListener(eventName, listener)
 
 ---
 
-## Event Emitters, Modules and Callbacks are at the core of Node.
+## Event Emitters, modules and callbacks are at the core of Node.
 
 ---
 
 # Taking it Further
-
-
 
 * `async` and `neo-async`
 * Promises - not really helping much
@@ -387,6 +462,16 @@ emitter.removeListener(eventName, listener)
 * Async await - nice wrapper for promises
 
 ---
+
+# Learning Node
+
+NodeProgram.com
+
+**What**: Node+Express+MongoDB+React
+**Where:** March 12-13, NYC
+
+---
+
 
 Q&A ❓🙋 :+1:
 
