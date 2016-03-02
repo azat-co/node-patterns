@@ -85,7 +85,7 @@ and
 ---
 
 
-# Problem 1
+# Problem
 
 How to schedule something in the future?
 
@@ -135,7 +135,7 @@ Convention is not a guarantee. It's just a style. — Read documentation or sour
 
 ---
 
-# Problem 2
+# Problem
 
 How to ensure the right sequence? Control flow 😕
 
@@ -282,7 +282,7 @@ module.exports = function processResponse3(error, data3) {
 
 ---
 
-# Problem 3
+# Problem
 
 How to modularize code properly?
 
@@ -296,7 +296,7 @@ Note: `exports = {...}` is anti-pattern.
 
 ---
 
-# Problem 4
+# Problem
 
 How to modularize dynamic code or where to initialize?
 
@@ -399,7 +399,7 @@ node program.js
 ---
 
 
-# Problem 5
+# Problem
 
 Modules are cached on based on their resolved filename.
 
@@ -454,7 +454,7 @@ use it sparringly
 
 ---
 
-# Problem 6: No Classes
+# Problem: No Classes
 
 How to organize your modular code into classes?
 
@@ -539,7 +539,7 @@ app.use(function(request, response, next) {
 
 ---
 
-# Problem 7
+# Problem
 
 Callbacks are still hard to manage even in modules!
 
