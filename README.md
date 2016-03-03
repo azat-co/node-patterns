@@ -700,17 +700,6 @@ I know it's been a lot 😓 Event Emitters, modules and callbacks are at the cor
 
 # We lose what we don't use.
 
----
-
-# Learning Node+React
-
-NodeProgram.com
-
-**What:** Node+Express+MongoDB+React
-**Where:** Flatiron School, NYC
-**When:** March 12-13, NYC
-
----
 
 # Rate This Talk 👍
 
