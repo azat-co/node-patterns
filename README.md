@@ -38,33 +38,13 @@ Blog: webapplog.com
 
 ---
 
-![left 100%](images/proexpress.png)
-![right 100%](images/practicalnode.png)
-
----
-
-![left 100%](images/reactquickly.jpg)
-
-![right 100%](images/fullstackjavascript.jpg)
-
----
-
-![left 100%](images/reactquickly.jpg)
-
-FREE: 7+ hours of videos
-
-<http://reactquickly.co>
-
-and
-<http://bit.ly/1Umn0pC>
-
-![right 100%](images/fullstackjavascript.jpg)
+![inline](images/azats-books-covers.png)
 
 ---
 
 # Node Basics
 
-* JavaScript
+* JavaScript, but not "==="
 * Asynchronous + Event Driven
 * Non-Blocking I/O
 
@@ -80,7 +60,16 @@ and
 
 ---
 
+# Full-StackOverflow Developer Pattern
+
+![inline](images/full-stackoverflow.png)
+
+
+---
+
 # JavaScript? :unamused:
+
+^So JavaScript can be tough
 
 ---
 
@@ -454,15 +443,13 @@ use it sparringly
 
 ---
 
-# Problem: No Classes
+# Problem: ES5 Classes are too complex
 
 How to organize your modular code into classes?
 
 ---
 
 # Prototypes
-
-(At least in ES5)
 
 Objects inherit from other objects
 
@@ -486,15 +473,116 @@ module.exports = function(options) {
 
 ---
 
-# Solution
+# Solution 2
 
 `require('util').inherits(child, parent)`
 
 ---
 
-## Callbacks Extreme
+# Decorator
+
+```js
+let userModel = function(options = {}) {
+ return {
+   getUsers: function() {},
+   findUserById: function(){},
+   limit: options.limit || 10
+ }
+}
+let user = userModel()
+console.log(user.limit)
+let adminModel = (userModel) => {
+  userModel.limit += 20
+  userModel.removeUser = ()=> {}
+  userModel.addUser = ()=>{}
+  return userModel
+}
+console.log(adminModel(user).limit)
+```
+// 10 30
 
 ---
+
+Prototype Decorator
+
+```
+Object.prototype.toPrettyJSON = function() {
+  console.log(this)
+  return JSON.stringify(this, null, 2)
+}
+let obj = new Object({a: 1})
+console.log(obj.toPrettyJSON())
+```
+
+Should: https://github.com/shouldjs/should.js
+
+---
+
+## Have you ever seen this code?
+
+```js
+setTimeout(function timeout() {
+  console.log('Hello Node')
+}, 0)
+```
+
+---
+
+```js
+// setimmediate.js
+setImmediate(function A() {
+  setImmediate(function B() {
+    console.log('Step 1')
+  })
+  setImmediate(function C() {
+    console.log('Step 2')
+    setImmediate(function F() { console.log('Step 3') })
+    setImmediate(function G() { console.log('Step 4') })
+  })
+})
+
+setTimeout(function timeout() {
+  console.log('Timeout!')
+}, 0)
+```
+
+// Timeout!, Step 1, Step 2, Step 3, Step 4
+// Step 1, Step 2, Timeout!, Step 3, Step 4
+
+^setTimeout is on the next iteration of the event loop
+^setImmediate is also, after I/O and before timers (official docs). setImmediate allows you to distribute computation over many turns of the event loop while ensuring that I/O doesn't get starved
+^setTimeout is slower
+
+---
+
+```js
+
+process.nextTick(function A() {
+  process.nextTick(function B() {
+    console.log('Step 1')
+  })
+  process.nextTick(function C() {
+    console.log('Step 2')
+    process.nextTick(function F() { console.log('Step 3') })
+    process.nextTick(function G() { console.log('Step 4') })
+  })
+})
+
+setTimeout(function timeout() {
+  console.log('Timeout!')
+}, 0)
+```
+
+// Step 1, Step 2, Step 3, Step 4, Timeout!
+
+^nextTick happens before I/O callbacks. So in a case where you're trying to break up a long running, CPU-bound job using recursion, you would now want to use setImmediate rather than process.nextTick to queue the next iteration as otherwise any I/O event callbacks wouldn't get the chance to run between iterations.
+
+---
+
+![inline](images/immediate-tick.png)
+
+---
+
 
 ## Node.js Middleware Pattern
 
@@ -613,32 +701,87 @@ job.process()
 
 ```js
 emitter.listeners(eventName)
-
 emitter.on(eventName, listener)
-
 emitter.once(eventName, listener)
-
 emitter.removeListener(eventName, listener)
 ```
+
+
+---
+
+# More Async
+
+* `async` and `neo-async`
+* `co` and `bluebird`
+* Promises - not really helping much
+* Generators - promising
+* Async await - nice wrapper for promises
+
+
+---
+
+# Let's leave managing async for another talk.
+
 
 ---
 
 ## Dependency Injection
 
+## Express Middleware
+
 ```js
-// server.js
-var app = express()
-app.set(port, 3000)
-...
-app.use(logger('dev'))
-...
-var boot = require('./routes')(app)
-boot({...}, function(){...})
+var express = require('express')  
+var app = express()  
+var session = require('express-session')
+
+app.use(session({  
+  store: require('connect-session-knex')()
+}))
 ```
 
 ---
 
-# Function which returns a function
+# Hapi
+
+```js
+server.views({  
+  engines: {
+    html: require('handlebars')
+  },
+  relativeTo: __dirname,
+  path: 'templates'
+})
+```
+
+---
+
+## Express Routes
+
+```js
+// server.js
+var app = express()
+//...
+app.use(logger('dev'))
+//...
+app = require('./routes')(app)
+app.listen(3000)
+```
+
+---
+
+```js
+// routes/index.js
+module.exports = function(app) {
+  app.get('/users', require('./users.js').getUsers)
+  app.post('/order', require('./orders.js').addOrder)
+  //...
+  return app
+}
+```
+
+---
+
+# Function which returns a function (monad?)
 
 ```js
 // routes/index.js
@@ -651,21 +794,9 @@ module.exports = function(app){
 
 ---
 
+
+
 # There are more patterns!
-
----
-
-# Further Async
-
-* `async` and `neo-async`
-* Promises - not really helping much
-* Generators - promising
-* Async await - nice wrapper for promises
-
----
-
-
-# Further Study
 
 * [`hooks`](https://github.com/bnoguchi/hooks-js)
 * [`require-dir`](https://www.npmjs.com/package/require-dir), [`require-directory`](https://www.npmjs.com/package/require-directory) and [`require-all`](https://www.npmjs.com/package/require-all)
@@ -673,7 +804,7 @@ module.exports = function(app){
 
 ---
 
-# Further Reading
+# Node Patterns by Mario Casciaro
 
 ![inline](images/nodedesignpatterns.jpg)
 
