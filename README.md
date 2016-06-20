@@ -19,7 +19,7 @@ slidenumbers: true
 
 ```js
 process.on('uncaughtException',
-  e => require('opn')(`http://stackoverflow.com/search?q=[js ]+${e.message}`)
+  e => require('opn')(`http://stackoverflow.com/search?q=[node.js ]+${e.message}`)
 )
 ```
 
