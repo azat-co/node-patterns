@@ -9,7 +9,8 @@ setImmediate(function A() {
     setImmediate(function G() { console.log('Step 4') })
   })
 })
-
+console.log('Step 0')
 setTimeout(function timeout() {
   console.log('Timeout!')
 }, 0)
+console.log('Step 0.5')

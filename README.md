@@ -7,6 +7,32 @@ slidenumbers: true
 
 ---
 
+## The one true #JavaScript exception handler pattern
+
+![inline](images/full-stackoverflow.png)
+
+
+---
+
+
+## The one true Node exception handler pattern
+
+```js
+process.on('uncaughtException',
+  e => require('opn')(`http://stackoverflow.com/search?q=[js ]+${e.message}`)
+)
+```
+
+---
+
+# Why Turn off Your IM and Care?
+
+1. You want to write and organize code better
+1. You want to become a go-to Node person in your team
+1. You want to understand Node things a bit deeper
+
+---
+
 # Slides :page_facing_up:
 
 <https://github.com/azat-co/node-patterns>
@@ -48,31 +74,18 @@ Blog: webapplog.com
 * Asynchronous + Event Driven
 * Non-Blocking I/O
 
----
-
-# Why Care?
-
----
-
-* Async code is hard
-* Code complexity grows exponentially
-* Good code organization is important
-
----
-
-# Full-StackOverflow Developer Pattern
-
-![inline](images/full-stackoverflow.png)
-
 
 ---
 
 # JavaScript? :unamused:
 
+* Async code is hard
+* Code complexity grows exponentially
+* Good code organization is important
+
 ^So JavaScript can be tough
 
 ---
-
 
 # Problem
 
@@ -430,6 +443,24 @@ global.console.log = function(){
 }
 ```
 
+```
+require('./logs.js')
+```
+
+---
+
+# Color Logs
+
+```js
+global.error = global.console.error = msg =>
+  console.log( '\x1b[31m\x1b[1mError:\x1b[22m \x1b[93m' + msg + '\x1b[0m' )
+global.info = global.console.info = msg =>
+  console.log( '\x1b[31m\x1b[36mInfo:\x1b[22m \x1b[93m\x1b[0m' + msg )
+global.log = console.log
+```
+
+![200% inline](images/color-logs.png)
+
 ---
 
 global is powerful... anti-pattern
@@ -443,13 +474,18 @@ use it sparringly
 
 ---
 
-# Problem: ES5 Classes are too complex
+# Problem: How to organize your modular code into classes?
 
-How to organize your modular code into classes?
+* ES5 Classes are too complex (new, prototype, this)
+* ES6 Classes don't allow define property and other [issues](https://www.dropbox.com/s/9liftwj2g8jikjk/Screenshot%202016-06-20%2011.48.12.png?dl=0)
 
 ---
 
-# Prototypes
+![inline](images/es6.png)
+
+---
+
+# Sidenote: Prototypes
 
 Objects inherit from other objects
 
@@ -458,6 +494,8 @@ Functions are objects too.
 ---
 
 # Solution
+
+Function factory for objects
 
 ```js
 module.exports = function(options) {
@@ -479,7 +517,13 @@ module.exports = function(options) {
 
 ---
 
-# Decorator
+# Problem
+
+Enhance functionality "on the fly"
+
+---
+
+# Decorator: An enhance an object
 
 ```js
 let userModel = function(options = {}) {
@@ -503,9 +547,15 @@ console.log(adminModel(user).limit)
 
 ---
 
-Prototype Decorator
+# Problem
 
-```
+How to enhance classes defined wit prototypal inheritance?
+
+---
+
+Prototype Decorator: Enhance global object
+
+```js
 Object.prototype.toPrettyJSON = function() {
   console.log(this)
   return JSON.stringify(this, null, 2)
@@ -515,6 +565,12 @@ console.log(obj.toPrettyJSON())
 ```
 
 Should: https://github.com/shouldjs/should.js
+
+---
+
+# Problem
+
+Non-blocking I/O can be blocked 😢
 
 ---
 
@@ -540,14 +596,16 @@ setImmediate(function A() {
     setImmediate(function G() { console.log('Step 4') })
   })
 })
-
+console.log('Step 0')
 setTimeout(function timeout() {
   console.log('Timeout!')
 }, 0)
+console.log('Step 0.5')
 ```
 
-// Timeout!, Step 1, Step 2, Step 3, Step 4
-// Step 1, Step 2, Timeout!, Step 3, Step 4
+// 0, 0.5, Timeout!, 1, 2, 3, 4
+
+^// 0, 0.5, Step 1, Step 2, Timeout!, Step 3, Step 4
 
 ^setTimeout is on the next iteration of the event loop
 ^setImmediate is also, after I/O and before timers (official docs). setImmediate allows you to distribute computation over many turns of the event loop while ensuring that I/O doesn't get starved
@@ -556,7 +614,6 @@ setTimeout(function timeout() {
 ---
 
 ```js
-
 process.nextTick(function A() {
   process.nextTick(function B() {
     console.log('Step 1')
@@ -567,13 +624,14 @@ process.nextTick(function A() {
     process.nextTick(function G() { console.log('Step 4') })
   })
 })
-
+console.log('Step 0')
 setTimeout(function timeout() {
   console.log('Timeout!')
 }, 0)
+console.log('Step 0.5')
 ```
 
-// Step 1, Step 2, Step 3, Step 4, Timeout!
+// 0, 0.5, Step 1, Step 2, Step 3, Step 4, Timeout!
 
 ^nextTick happens before I/O callbacks. So in a case where you're trying to break up a long running, CPU-bound job using recursion, you would now want to use setImmediate rather than process.nextTick to queue the next iteration as otherwise any I/O event callbacks wouldn't get the chance to run between iterations.
 
@@ -583,12 +641,13 @@ setTimeout(function timeout() {
 
 ---
 
+# Problem
 
-## Node.js Middleware Pattern
+Insure continuity
 
 ---
 
-### What is Middleware
+## Node.js Middleware Pattern
 
 Middleware pattern is a series of processing units connected together, where the output of one unit is the input for the next one. In Node.js, this often means a series of functions in the form:
 
@@ -601,7 +660,7 @@ function(args, next) {
 
 ---
 
-## Continuity
+## Express Example
 
 Request is coming from a client and response is sent back to the client.
 
@@ -627,9 +686,19 @@ app.use(function(request, response, next) {
 
 ---
 
-# Problem
+# Problems
 
-Callbacks are still hard to manage even in modules!
+* Callbacks are still hard to manage even in modules!
+* Callbacks fire just once
+* Callbacks fire only at the end
+* No way to remove a callback or add a new one "on the fly"
+
+
+---
+
+## No it's not promises. 😉
+
+^Promises fire just once just as callbacks
 
 ---
 
@@ -781,6 +850,18 @@ module.exports = function(app) {
 
 ---
 
+# Problem
+
+```js
+let f = ?
+let a = f('Portland')
+let b = f('Oakland')
+console.log(a('Hi')) // Hi Portland
+console.log(b('Hey')) // Hey Oakland
+```
+
+---
+
 # Function which returns a function (monad?)
 
 ```js
@@ -794,12 +875,17 @@ module.exports = function(app){
 
 ---
 
-
-
-# There are more patterns!
+# Useful modules
 
 * [`hooks`](https://github.com/bnoguchi/hooks-js)
 * [`require-dir`](https://www.npmjs.com/package/require-dir), [`require-directory`](https://www.npmjs.com/package/require-directory) and [`require-all`](https://www.npmjs.com/package/require-all)
+* [`opn`](https://github.com/sindresorhus/opn)
+
+^http://thenodeway.io and https://darrenderidder.github.io/talks/ModulePatterns/#/14
+
+---
+
+# There are more patterns!
 
 
 ---
@@ -811,6 +897,7 @@ module.exports = function(app){
 <http://amzn.to/21hXxTy>
 
 ---
+
 
 ## 30-second Summary
 
@@ -825,12 +912,13 @@ module.exports = function(app){
 
 ## THE END
 
-I know it's been a lot 😓 Event Emitters, modules and callbacks are at the core of Node. Know thy patterns!
+1. Start with what you need
+1. Try and see what works for you (func vs. proto)
+1. Don't over engineers following the latest fad — stick to fundamentals!
+
+Don't fight with JavaScript/Node, use it!
 
 ---
-
-# We lose what we don't use.
-
 
 # Rate This Talk 👍
 
@@ -839,15 +927,15 @@ Scale 1-10 (10 is highest)
 Anyone below 8?
 
 This is your chance ask a question to make it 10!
+(If you don't ✋, then you rate 8+, right?)
 
 ---
 
-
-Q&A ❓🙋 :+1:
-
-Send bugs 🐛 to
+# Code and Slides
 
 <https://github.com/azat-co/node-patterns/issues>
 
 Twitter: @azat_co
 Email: hi@azat.co
+
+Also, checkout NodeProgram.com
