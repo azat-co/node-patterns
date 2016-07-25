@@ -739,7 +739,7 @@ var Job = function Job() {
   // ...
   this.process = function() {
     // ...
-    job.emit('done', { completedOn: new Date() })
+    this.emit('done', { completedOn: new Date() })
   }
 }
 
