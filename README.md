@@ -603,9 +603,9 @@ setTimeout(function timeout() {
 console.log('Step 0.5')
 ```
 
-// 0, 0.5, Timeout!, 1, 2, 3, 4
+// Step 0, Step 0.5, Timeout!, Step 1, Step 2, Step 3, Step 4
 
-^// 0, 0.5, Step 1, Step 2, Timeout!, Step 3, Step 4
+^// Step 0, Step 0.5, Step 1, Step 2, Timeout!, Step 3, Step 4
 
 ^setTimeout is on the next iteration of the event loop
 ^setImmediate is also, after I/O and before timers (official docs). setImmediate allows you to distribute computation over many turns of the event loop while ensuring that I/O doesn't get starved
@@ -631,7 +631,7 @@ setTimeout(function timeout() {
 console.log('Step 0.5')
 ```
 
-// 0, 0.5, Step 1, Step 2, Step 3, Step 4, Timeout!
+// Step 0, Step 0.5, Step 1, Step 2, Step 3, Step 4, Timeout!
 
 ^nextTick happens before I/O callbacks. So in a case where you're trying to break up a long running, CPU-bound job using recursion, you would now want to use setImmediate rather than process.nextTick to queue the next iteration as otherwise any I/O event callbacks wouldn't get the chance to run between iterations.
 
