@@ -525,3 +525,7 @@ These are things that are worth looking at for further study:
 * [Node Design Patterns book](http://amzn.to/21hXxTy) not mine, I'm just reading it at the moment.
 
 
+---
+
+
+&copy; NodeProgram.com, Node.University and Azat Mardan
