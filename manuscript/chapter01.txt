@@ -1,5 +1,3 @@
-# Node Patterns: From Callbacks to Observer
-
 This report started has a video course 🎥 on [Node.University](http://node.university) and slides 📄 at <https://github.com/azat-co/node-patterns>. You can clone the source code **with the slides** like this:
 
 ```
@@ -8,7 +6,7 @@ git clone https://github.com/azat-co/node-patterns
 
 Before we can get started with Node patterns, let's touch on some of the main advantages and features of using Node. They'll help us later to understand why we need to deal with certain problems.
 
-## Node Advantages and Features
+# Node Advantages and Features
 
 Here are some of the main reasons people use Node:
 
@@ -28,7 +26,7 @@ Then as you know the code complexity grows exponentially. Each module A used by 
 
 So the good code organization is important. That's why we, Node engineers, need to care about its patterns.
 
-## All You Can Eat Callbacks
+# All You Can Eat Callbacks
 
 How to schedule something in the future? In other words, how to ensure that after a certain event, our code will be executed, i.e., ensure the right sequence. Callbacks All the Way!
 
@@ -55,7 +53,7 @@ The following are Node callback conventions:
 
 Note: Naming doesn't matter but the order matters. Node.js won't enforce the arguments. Convention is not a guarantee—it's just a style. Read documentation or source code.
 
-## Named Functions
+# Named Functions
 Now a new problem arises: How to ensure the right sequence? Control flow 😕
 For example, there are three HTTP requests to perform the following tasks:
 
@@ -144,7 +142,7 @@ function processResponse3(error, data1) {
 }
 ```
 
-## Modularization in Node
+# Modularization in Node
 
 Moreover, you can modularize functions into separate files to keep your files lean and clean. Also, modularization will allow you to re-use the code in other projects. The main entry point will contain just two statements:
 
@@ -183,7 +181,7 @@ module.exports = function processResponse3(error, data3) {
 }
 ```
 
-## Node.js Middleware Pattern
+# Node.js Middleware Pattern
 
 Let's take callbacks to extreme. We can implement continuity-passing pattern known simply as the middleware pattern.
 
@@ -217,7 +215,7 @@ app.use(function(request, response, next) {
 })
 ```
 
-## Node Modules Patterns
+# Node Modules Patterns
 
 As we started talking about modularization, there are many ways to skin a catfish. The new problem is how to modularize code properly?
 
@@ -257,7 +255,7 @@ module.exports.name = {...}
 
 This is rarely used though as it's considered a Node Kung Fu. The best approach is to have one export per file. This will keep files lean and small.
 
-## Code in Node Modules
+# Code in Node Modules
 
 What about the code outside of the exports? You can have that too, but it works differently from the code inside of the exports. It has something to do with the way Node imports modules and caches them. For example, we have code A outside of exports and code B inside of it:
 
@@ -281,7 +279,7 @@ require('./import-module.js')
 
 The caching of modules works across different files, so requiring the same module many times in different files will trigger "Code A" just once.
 
-## Singleton Pattern in Node
+# Singleton Pattern in Node
 
 Software engineers familiar with singleton pattern know that their purpose is to provide a single usually global instance. Set aside the conversations that singletons are bad, how do you implement them in Node?
 
@@ -347,7 +345,7 @@ Using global is powerful... but anti-pattern, because it's very easy to mess up 
 
 It's very similar to browser `window.jQuery = jQuery` pattern. However, in browsers we don't have modules, it's better to use explicit exports in Node, than to use globals.
 
-## Importing Folders
+# Importing Folders
 
 Continuing with importing, there's an interesting feature in Node which allows you to import not just JavaScript/Node files, or JSON files, but whole folders.
 
@@ -375,7 +373,7 @@ All the properties in `index.js` such as users, accounts, etc. will be propertie
 * [`require-directory`](https://www.npmjs.com/package/require-directory)
 * [`require-all`](https://www.npmjs.com/package/require-all)
 
-## Function Factory Pattern
+# Function Factory Pattern
 
 There are no classes in Node. So how to organize your modular code into classes? Objects inherit from other objects, and functions are objects too.
 
@@ -405,7 +403,7 @@ require('util').inherits(child, parent)
 ```
 
 
-## Node Dependency Injection
+# Node Dependency Injection
 
 Every now and then, you have some dynamic objects which you need in modules. In other words, there are dependencies in the modules on something which is in the main file.
 
@@ -424,7 +422,7 @@ boot({...}, function(){...})
 
 
 
-## Function Which Returns a Function
+# Function Which Returns a Function
 
 The `boot.js` file actually uses another (probably my most favorite) pattern which I simply call function which returns a function. This simple pattern allows you to create different modes/versions of the inner function, so to speak.
 
@@ -440,7 +438,7 @@ module.exports = function(app){
 
 One time I read a blog post where this pattern was called monad, but then one angry fan of functional programming told me that this is not a monad (and was angry about it as well). Oh well.
 
-## Observer Pattern in Node
+# Observer Pattern in Node
 
 Still, callbacks are hard to manage even with modules! For example, you have this:
 
@@ -499,7 +497,7 @@ emitter.once(eventName, listener)
 emitter.removeListener(eventName, listener)
 ```
 
-## 30-Second Summary
+# 30-Second Summary
 
 1. Callbacks
 1. Observer
@@ -508,7 +506,7 @@ emitter.removeListener(eventName, listener)
 1. Middleware
 1. Bunch of other stuff 💥
 
-## Further Study
+# Further Study
 
 
 Obviously, there are more patterns like streams. Managing asynchronous code is a whole new set of problems, solutions and patterns. However, this essay is long enough already. Thanks for reading!
